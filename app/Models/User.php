@@ -3,14 +3,19 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Traits\Encryptable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Crypt;
 use Laravel\Sanctum\HasApiTokens;
+use Throwable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Encryptable;
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +24,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'cin',
         'email',
+        'amount',
+        'age',
+        'city',
+        'company',
         'password',
     ];
 
@@ -41,4 +51,37 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public $attributesCryptable = [
+        'name',
+        'email',
+        'cin'
+    ];
+
+    // public function setCinAttribute($value)
+    // {
+    //     $this->attributes['cin'] = Crypt::encrypt($value);
+    // }
+
+    public function getCinAttribute($value)
+    {
+        return $this->tryToDecrypt($value);
+    }
+    public function getNameAttribute($value)
+    {
+        return $this->tryToDecrypt($value);
+    }
+    public function getEmailAttribute($value)
+    {
+        return $this->tryToDecrypt($value);
+    }
+
+    private function tryToDecrypt($value)
+    {
+        try {
+            return  Crypt::decrypt($value);
+        } catch (Throwable $th) {
+            return $value;
+        }
+    }
 }

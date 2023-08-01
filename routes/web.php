@@ -1,6 +1,8 @@
 <?php
 
+use App\Exports\UsersExport;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('', function () {
+    return view('emails.subscription-expiration');
 });
+
+Route::get('export', fn () =>  Excel::download(new UsersExport(), 'userexport.csv'));
