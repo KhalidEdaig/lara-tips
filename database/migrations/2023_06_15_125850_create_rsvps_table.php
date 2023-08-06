@@ -14,12 +14,13 @@ class CreateRsvpsTable extends Migration
     public function up()
     {
         Schema::create('rsvps', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('user_id')->unsigned()->index();
+            $table->id();
+            $table->unsignedBigInteger('user_id')->unsigned()->index();
             $table->integer('event_id')->unsigned()->index();
             $table->timestamp('responded_at')->nullable();
             $table->string('response')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

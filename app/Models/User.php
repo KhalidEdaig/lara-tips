@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Crypt;
@@ -24,13 +25,16 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'cin',
         'email',
-        'amount',
+        'bod',
         'age',
         'city',
         'company',
+        'amount',
+        'cin',
+        'email_verified_at',
         'password',
+        'remember_token',
     ];
 
     /**
@@ -63,6 +67,12 @@ class User extends Authenticatable
     //     $this->attributes['cin'] = Crypt::encrypt($value);
     // }
 
+
+    public function meters(): HasMany
+    {
+        return $this->hasMany(Meter::class);
+    }
+
     public function getCinAttribute($value)
     {
         return $this->tryToDecrypt($value);
@@ -83,5 +93,11 @@ class User extends Authenticatable
         } catch (Throwable $th) {
             return $value;
         }
+    }
+
+    public function password($value)
+    {
+        set:
+        fn () => bcrypt($value);
     }
 }
