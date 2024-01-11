@@ -4,6 +4,10 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Consumer;
+use App\Models\Dossier;
+use App\Models\Optician;
+use App\Models\Refund;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,5 +22,10 @@ class DatabaseSeeder extends Seeder
             CostRangeSeeder::class,
             MeterSeeder::class
         ]);
+        Optician::factory(10)->create();
+        Consumer::factory(20)->create();
+        Dossier::factory(10)->create();
+        Refund::factory(10)->create();
+
     }
 }

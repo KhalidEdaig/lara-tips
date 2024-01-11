@@ -77,10 +77,12 @@ class User extends Authenticatable
     {
         return $this->tryToDecrypt($value);
     }
+
     public function getNameAttribute($value)
     {
         return $this->tryToDecrypt($value);
     }
+    
     public function getEmailAttribute($value)
     {
         return $this->tryToDecrypt($value);

@@ -1,7 +1,9 @@
 <?php
 
+use App\Exports\ReportExport;
 use App\Exports\UsersExport;
 use App\Http\Controllers\CostReportController;
+use App\Models\Refund;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +20,11 @@ use Maatwebsite\Excel\Facades\Excel;
 |
 */
 
-Route::get('', function () {
+Route::get('{any}', function () {
+    return view('layouts.default');
+})->where('any','.*');
+
+Route::get('email', function () {
     return view('emails.subscription-expiration');
 });
 
@@ -42,7 +48,7 @@ Route::get('three-way-to-get-last-inserted-id', function () {
     ]);
 
     echo $user->id . PHP_EOL;
-    
+
     echo "Method 2: Retrieving Insert ID Using new Model() and save()" . PHP_EOL;
     $user = new User();
     $user->name                  = fake()->name();
@@ -58,8 +64,14 @@ Route::get('three-way-to-get-last-inserted-id', function () {
     $user->remember_token        = str()->random(10);
     $user->save();
     echo $user->id . PHP_EOL;
-
 });
 
 
-Route::get('export', fn () =>  Excel::download(new UsersExport(), 'userexport.csv'));
+Route::get('export', fn () =>  Excel::download(new ReportExport('test',now()->format('h:m:s'),now()->format('Y-m-d')), 'userexport.xlsx'));
+
+Route::get('test', function () {
+    $refunds = Refund::with(['dossier','consumer','optician'])
+    ->get();
+
+    return view('welcome',with(['collection'=>$refunds]));
+});
